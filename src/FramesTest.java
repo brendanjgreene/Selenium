@@ -1,0 +1,33 @@
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+
+public class FramesTest {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		System.setProperty("webdriver.chrome.driver", "/Users/brendangreene/workspace/chromedriver");
+		WebDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.get("https://jqueryui.com/droppable/");
+		//driver.switchTo().frame(0); works but will break in index changes
+		System.out.println("number of iframes = "+driver.findElements(By.tagName("iframe")).size());
+		
+		driver.switchTo().frame(driver.findElement(By.cssSelector("iframe.demo-frame")));
+		System.out.println(driver.findElement(By.id("draggable")).isDisplayed());
+		WebElement source = driver.findElement(By.id("draggable"));
+		WebElement target = driver.findElement(By.id("droppable"));
+		Actions drag = new Actions(driver);
+		drag.dragAndDrop(source, target).build().perform();
+		driver.switchTo().defaultContent(); // need to get out of iframe
+		
+		Thread.sleep(30000L);
+		driver.close();
+		
+	}
+
+}
